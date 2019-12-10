@@ -38,7 +38,11 @@
 
 - (id<SEGIntegration>)createWithSettings:(NSDictionary *)settings forAnalytics:(SEGAnalytics *)analytics
 {
-    return [[SEGFirebaseIntegration alloc] initWithSettings:settings andOptions: self.options];
+    __block SEGFirebaseIntegration* integration;
+    dispatch_sync(dispatch_get_main_queue(), ^{
+      integration = [[SEGFirebaseIntegration alloc] initWithSettings:settings andOptions:self.options];
+    });
+    return integration;
 }
 
 - (NSString *)key
