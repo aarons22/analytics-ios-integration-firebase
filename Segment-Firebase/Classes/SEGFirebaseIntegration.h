@@ -4,8 +4,13 @@
 //
 
 #import <Foundation/Foundation.h>
+
+#if defined(__has_include) && __has_include(<Analytics/SEGAnalytics.h>)
 #import <Analytics/SEGIntegration.h>
 #import <Firebase/Firebase.h>
+#else
+@import Segment;
+#endif
 
 
 @interface SEGFirebaseIntegration : NSObject <SEGIntegration>

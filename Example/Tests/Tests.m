@@ -65,7 +65,21 @@ describe(@"Firebase Integration", ^{
             @"Starship_Type" : @"Death Star"
         }];
     });
-    
+
+    it(@"track with event name and prop name > 40 chars", ^{
+        SEGTrackPayload *payload = [[SEGTrackPayload alloc] initWithEvent:@"ufddxsblvtujywadkmohvddqnpbginxozqjffhjyy"
+            properties:@{
+                @"ufddxsblvtujywadkmohvddqnpbginxozqjffhjyy" : @"Death Star"
+            }
+            context:@{}
+            integrations:@{}];
+
+        [integration track:payload];
+        [verify(mockFirebase) logEventWithName:@"ufddxsblvtujywadkmohvddqnpbginxozqjffhjy" parameters:@{
+            @"ufddxsblvtujywadkmohvddqnpbginxozqjffhjy" : @"Death Star"
+        }];
+    });
+
     it(@"track with event name and parmas separated by periods", ^{
         SEGTrackPayload *payload = [[SEGTrackPayload alloc] initWithEvent:@"Starship.Ordered"
                                                                properties:@{
@@ -73,13 +87,13 @@ describe(@"Firebase Integration", ^{
                                                                             }
                                                                   context:@{}
                                                              integrations:@{}];
-        
+
         [integration track:payload];
         [verify(mockFirebase) logEventWithName:@"Starship_Ordered" parameters:@{
                                                                                 @"Starship_Type" : @"Death Star"
                                                                                 }];
     });
-    
+
     it(@"track with leading and trailing spacing for event name", ^{
         SEGTrackPayload *payload = [[SEGTrackPayload alloc] initWithEvent:@"   Starship Ordered  "
                                                                properties:@{
@@ -87,7 +101,21 @@ describe(@"Firebase Integration", ^{
                                                                             }
                                                                   context:@{}
                                                              integrations:@{}];
-        
+
+        [integration track:payload];
+        [verify(mockFirebase) logEventWithName:@"Starship_Ordered" parameters:@{
+                                                                                @"Starship_Type" : @"Death Star"
+                                                                                }];
+    });
+         
+    it(@"track with leading and trailing spacing for event name with dashes", ^{
+        SEGTrackPayload *payload = [[SEGTrackPayload alloc] initWithEvent:@"   Starship-Ordered  "
+                                                               properties:@{
+                                                                            @"Starship.Type" : @"Death Star"
+                                                                            }
+                                                                  context:@{}
+                                                             integrations:@{}];
+
         [integration track:payload];
         [verify(mockFirebase) logEventWithName:@"Starship_Ordered" parameters:@{
                                                                                 @"Starship_Type" : @"Death Star"
@@ -119,7 +147,7 @@ describe(@"Firebase Integration", ^{
 
         [integration track:payload];
         // TODO: look into how to handle mapping Firebase reserved params to each products
-        [verify(mockFirebase) logEventWithName:@"ecommerce_purchase" parameters:@{
+        [verify(mockFirebase) logEventWithName:@"purchase" parameters:@{
             @"checkout_id" : @"9bcf000000000000",
             @"transaction_id" : @"50314b8e",
             @"affiliation" : @"App Store",
@@ -128,11 +156,11 @@ describe(@"Firebase Integration", ^{
             @"tax" : @1.20,
             @"currency" : @"USD",
             @"item_category" : @"Games",
-            @"products" : @{
-                @"product_id" : @"2013294",
-                @"category" : @"Games",
-                @"name" : @"Monopoly: 3rd Edition",
-                @"brand" : @"Hasbros",
+            @"items" : @{
+                @"item_id" : @"2013294",
+                @"item_category" : @"Games",
+                @"item_name" : @"Monopoly: 3rd Edition",
+                @"item_brand" : @"Hasbros",
                 @"price" : @"21.99",
                 @"quantity" : @"1"
             }
@@ -164,7 +192,7 @@ describe(@"Firebase Integration", ^{
             @"sku" : @"G-32",
             @"item_category" : @"Games",
             @"item_name" : @"Monopoly: 3rd Edition",
-            @"brand" : @"Hasbro",
+            @"item_brand" : @"Hasbro",
             @"variant" : @"200 pieces",
             @"price" : @18.99,
             @"quantity" : @1,
@@ -201,7 +229,7 @@ describe(@"Firebase Integration", ^{
             @"sku" : @"G-32",
             @"item_category" : @"Games",
             @"item_name" : @"Monopoly 3rd Edition",
-            @"brand" : @"Hasbro",
+            @"item_brand" : @"Hasbro",
             @"variant" : @"200 pieces",
             @"price" : @18.99,
             @"quantity" : @1,
@@ -240,7 +268,7 @@ describe(@"Firebase Integration", ^{
             @"sku" : @"G-32",
             @"item_category" : @"Games",
             @"item_name" : @"Monopoly: 3rd Edition",
-            @"brand" : @"Hasbro",
+            @"item_brand" : @"Hasbro",
             @"variant" : @"200 pieces",
             @"price" : @18.99,
             @"quantity" : @1,
@@ -278,7 +306,7 @@ describe(@"Firebase Integration", ^{
             @"sku" : @"G-32",
             @"item_category" : @"Games",
             @"item_name" : @"Monopoly: 3rd Edition",
-            @"brand" : @"Hasbro",
+            @"item_brand" : @"Hasbro",
             @"variant" : @"200 pieces",
             @"price" : @18.99,
             @"quantity" : @1,
@@ -323,11 +351,11 @@ describe(@"Firebase Integration", ^{
             @"tax" : @1.20,
             @"currency" : @"USD",
             @"item_category" : @"Games",
-            @"products" : @{
-                @"product_id" : @"2013294",
-                @"category" : @"Games",
-                @"name" : @"Monopoly: 3rd Edition",
-                @"brand" : @"Hasbros",
+            @"items" : @{
+                @"item_id" : @"2013294",
+                @"item_category" : @"Games",
+                @"item_name" : @"Monopoly: 3rd Edition",
+                @"item_brand" : @"Hasbros",
                 @"price" : @"21.99",
                 @"quantity" : @"1"
             }
@@ -416,11 +444,11 @@ describe(@"Firebase Integration", ^{
         [verify(mockFirebase) logEventWithName:@"view_item_list" parameters:@{
             @"list_id" : @"hot_deals_1",
             @"item_category" : @"Deals",
-            @"products" : @{
-                @"product_id" : @"2013294",
-                @"category" : @"Games",
-                @"name" : @"Monopoly: 3rd Edition",
-                @"brand" : @"Hasbros",
+            @"items" : @{
+                @"item_id" : @"2013294",
+                @"item_category" : @"Games",
+                @"item_name" : @"Monopoly: 3rd Edition",
+                @"item_brand" : @"Hasbros",
                 @"price" : @"21.99",
                 @"quantity" : @"1"
             }
@@ -457,7 +485,7 @@ describe(@"Firebase Integration", ^{
             @"sku" : @"G-32",
             @"item_category" : @"Games",
             @"item_name" : @"Monopoly: 3rd Edition",
-            @"brand" : @"Hasbro",
+            @"item_brand" : @"Hasbro",
             @"variant" : @"200 pieces",
             @"price" : @18.99,
             @"quantity" : @1,
@@ -497,7 +525,7 @@ describe(@"Firebase Integration", ^{
             @"sku" : @"G-32",
             @"item_category" : @"Games",
             @"item_name" : @"Monopoly: 3rd Edition",
-            @"brand" : @"Hasbro",
+            @"item_brand" : @"Hasbro",
             @"variant" : @"200 pieces",
             @"price" : @18.99,
             @"url" : @"https://www.company.com/product/path",
@@ -533,7 +561,7 @@ describe(@"Firebase Integration", ^{
             @"sku" : @"G-32",
             @"item_category" : @"Games",
             @"item_name" : @"Monopoly: 3rd Edition",
-            @"brand" : @"Hasbro",
+            @"item_brand" : @"Hasbro",
             @"variant" : @"200 pieces",
             @"price" : @18.99,
             @"url" : @"https://www.company.com/product/path",
@@ -552,6 +580,20 @@ describe(@"Firebase Integration", ^{
         [integration track:payload];
         [verify(mockFirebase) logEventWithName:@"search" parameters:@{
             @"search_term" : @"blue hotpants"
+        }];
+    });
+
+    it(@"track screen with name", ^{
+        SEGScreenPayload *payload = [[SEGScreenPayload alloc] initWithName:@"Home screen"
+                                                                  category:@""
+                                                                properties:@{}
+                                                                   context:@{}
+                                                              integrations:@{}];
+        [integration screen:payload];
+        // screen is set async, so need to pump the runloop.
+        [NSRunLoop.mainRunLoop runUntilDate:[NSDate dateWithTimeIntervalSinceNow:5]];
+        [verify(mockFirebase) logEventWithName:@"screen_view" parameters:@{
+            kFIRParameterScreenName : @"Home screen"
         }];
     });
 
